@@ -1,22 +1,22 @@
 const { ethers } = require("hardhat");
 
 async function main() {
-  // const PolToken = await ethers.getContractFactory("PolyToken");
-  // const poltoken = await PolToken.deploy();
+  const PolToken = await ethers.getContractFactory("PolyToken");
+  const poltoken = await PolToken.deploy();
 
-  // await poltoken.deployed();
+  await poltoken.deployed();
 
-  // console.log(
-  //   `PolToken deployed to ${poltoken.address}`
-  // );
+  console.log(
+    `PolToken deployed to ${poltoken.address}`
+  );
 
-  // const TradeToken = await ethers.getContractFactory("TradeToken");
-  // const tradetoken = await TradeToken.deploy();
-  // await tradetoken.deployed();
+  const TradeToken = await ethers.getContractFactory("TradeToken");
+  const tradetoken = await TradeToken.deploy();
+  await tradetoken.deployed();
 
-  // console.log(
-  //   `TradeToken deployed to ${tradetoken.address}`
-  // );
+  console.log(
+    `TradeToken deployed to ${tradetoken.address}`
+  );
 
   const Swapper = await ethers.getContractFactory("Swapper");
   const swapper = await Swapper.deploy();
