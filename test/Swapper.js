@@ -75,10 +75,28 @@ describe("Swapper", function () {
     expect(swapperBalance).to.equal(buyAmount);
  });
 
+ it("Unswap 100 WRP token for 100 PLT token (1:1)", async function () {
+  const { Deployer, swapper, PLTAddress, poltoken, swapperAddress } = await loadFixture(deployAll);
+  const buyAmount = await ethers.utils.parseEther("100.0");
+  await poltoken.approve(swapperAddress, buyAmount);
+  const beforeBalance = await swapper.balanceOf(Deployer);
+  const beforePLTBalance = await poltoken.balanceOf(Deployer);
+  const beforeSwapperBalance = await poltoken.balanceOf(swapperAddress);
+  await swapper.swap(PLTAddress, buyAmount);
+  await swapper.unswap(PLTAddress, buyAmount);
+  const newBalance = await swapper.balanceOf(Deployer);
+  const newPLTBalance = await poltoken.balanceOf(Deployer);
+  const newSwapperBalance = await poltoken.balanceOf(swapperAddress);
+  expect(beforeBalance).to.equal(newBalance);
+  expect(beforePLTBalance).to.equal(newPLTBalance);
+  expect(beforeSwapperBalance).to.equal(newSwapperBalance);
+});
+
  it("Only Admin (Deployer) can set price", async function () {
   const { swapper, account2 } = await loadFixture(deployAll);
 
   expect(swapper.connect(account2).setPrice(2)).to.be.revertedWith("Ownable: caller is not the owner");
 });
+
 });
 });
