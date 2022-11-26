@@ -1,7 +1,6 @@
 const { ethers } = require("hardhat");
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
   const PolToken = await ethers.getContractFactory("PolyToken");
   const poltoken = await PolToken.deploy();
 
@@ -19,12 +18,12 @@ async function main() {
     `TradeToken deployed to ${tradetoken.address}`
   );
 
-  const WrapToken = await ethers.getContractFactory("WrappToken");
-  const wraptoken = await WrapToken.deploy();
-  await wraptoken.deployed();
+  const Swapper = await ethers.getContractFactory("Swapper");
+  const swapper = await Swapper.deploy();
+  await swapper.deployed();
 
   console.log(
-    `WrapToken deployed to ${wraptoken.address}`
+    `Swapper deployed to ${swapper.address}`
   );
 
 }

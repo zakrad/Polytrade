@@ -4,7 +4,7 @@ pragma solidity ^0.8.4;
 /// @author Mohammad Z. Rad
 /// @title Multitoken Swapper
 /**
-* @dev First we deploy 2 ERC20 token then this contract which is an ERC20 Wrapp token with default price of 1 and the price can change by Owner 
+* @dev First we deploy 2 ERC20 token (PLT, TLT) then this contract which is an ERC20 Wrapp token with default price of 1 and the price can change by Owner 
 */
 ///@notice ERC20 interface to interact with ant ERC20 contract
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -15,8 +15,8 @@ import "./WrappToken.sol";
 contract Swapper is WrappToken, Ownable {
     
     IERC20 private token;
-    ///@notice wrpPrice with 4 decimal precision
-    uint256 public wrpPrice = 10000;
+    ///@notice wrpPrice initial price
+    uint256 public wrpPrice = 1;
 
     ///@notice events which emit after Swapping and Unswapping
     event Swapped(address user, uint256 amount);
@@ -33,7 +33,7 @@ contract Swapper is WrappToken, Ownable {
         _;
     }
 
-    ///@dev price input should be (ActualPrice * 10e4) for decimal precision for exmaple if you want to set price 2 should pass 20000
+    ///@dev price input should be without decimal precision 
     function setPrice(uint price) external onlyOwner {
         wrpPrice = price;
     }
@@ -55,7 +55,7 @@ contract Swapper is WrappToken, Ownable {
     *@param token_ address of ERC20 token he wants to redeem
     *@param amount amount of wrapp token sender will send to redeem his/her initial ERC20 token 
     *@notice this function take amount of wrapp token and unswap for ERC20 token
-    *@dev there are some possibilities if owner change Price it could result in not having enough reserveBalance so swapping and unswapping will redeem themselves as long as same amount with same price exchange between contract and sender
+    *@dev there are some possibilities if owner change Price it could result in not having enough reserveBalance so swapping and unswapping will redeem themselves as long as same amount with same price exchange between contract and sender happens
     */ 
     function unswap(address token_, uint256 amount) external priorCheck(token_, amount) {
         token = IERC20(token_);
@@ -70,8 +70,8 @@ contract Swapper is WrappToken, Ownable {
 
     ///@notice The Owner (which is deployer of Swapper) can Set the Price of each Wrapp token
     ///@dev This could result in not having enough reserveBalance to redeem when Unswapping happens
-    function getPrice() private view returns (uint256) {
-        return  wrpPrice / (10 ** 4);
+    function getPrice() public view returns (uint256) {
+        return  wrpPrice;
     }
 
 }
