@@ -1,26 +1,32 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
-const hre = require("hardhat");
+const { ethers } = require("hardhat");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  const [deployer] = await ethers.getSigners();
+  const PolToken = await ethers.getContractFactory("PolyToken");
+  const poltoken = await PolToken.deploy();
 
-  const lockedAmount = hre.ethers.utils.parseEther("1");
-
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
-
-  await lock.deployed();
+  await poltoken.deployed();
 
   console.log(
-    `Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
+    `PolToken deployed to ${poltoken.address}`
   );
+
+  const TradeToken = await ethers.getContractFactory("TradeToken");
+  const tradetoken = await TradeToken.deploy();
+  await tradetoken.deployed();
+
+  console.log(
+    `TradeToken deployed to ${tradetoken.address}`
+  );
+
+  const WrapToken = await ethers.getContractFactory("WrappToken");
+  const wraptoken = await WrapToken.deploy();
+  await wraptoken.deployed();
+
+  console.log(
+    `WrapToken deployed to ${wraptoken.address}`
+  );
+
 }
 
 // We recommend this pattern to be able to use async/await everywhere
@@ -29,3 +35,7 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+
+// 0xA0855bACF7712001DF3b3aa6209c879A323a97Ff Polytoken
+// 0xdB3457d1649eF0e3E306b8A7Ecd66E50d7Ef31cD Tradetoken
+// 0xEb22eDf3F11453AeC427e29308816CeD16b00a9A Wrapptoken
